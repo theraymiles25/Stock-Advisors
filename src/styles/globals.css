@@ -135,6 +135,12 @@ body {
   animation: stream-in 0.15s ease-out;
 }
 
+/* === Stock Ticker Animation === */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* === Panel Glass Effect === */
 .glass-panel {
   background: var(--color-sa-bg-glass);
