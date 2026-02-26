@@ -357,6 +357,70 @@ export abstract class BaseAgent {
   }
 
   // ---------------------------------------------------------------------------
+  // Track Record Injection
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Build a track record context section to append to the user message.
+   * Queries the agent's historical recommendations for the requested symbols
+   * and formats them as context so the agent can calibrate its confidence.
+   *
+   * Fails gracefully if the database is not available.
+   */
+  private async buildTrackRecordContext(symbols: string[]): Promise<string> {
+    try {
+      // Dynamic import to avoid circular dependencies and graceful failure
+      const { getRecentRecommendations, getAgentStatsForSymbol } =
+        await import('../../services/database/AgentMemory');
+
+      const sections: string[] = [];
+
+      // Get overall recent history for this agent
+      const recent = await getRecentRecommendations(this.capability.id, 10);
+      if (recent.length > 0) {
+        sections.push('\n---\n');
+        sections.push('## Your Track Record (for calibration)');
+        sections.push(`You have ${recent.length} recent recommendations on record.`);
+
+        // Summarize by outcome
+        const resolved = recent.filter(r => r.outcome && r.outcome !== 'pending');
+        const wins = resolved.filter(r => r.outcome === 'win' || r.outcome === 'target_hit');
+        if (resolved.length > 0) {
+          const winRate = ((wins.length / resolved.length) * 100).toFixed(1);
+          sections.push(`Resolved: ${resolved.length}, Win rate: ${winRate}%`);
+        }
+      }
+
+      // Get symbol-specific history
+      for (const symbol of symbols) {
+        const symbolHistory = await getAgentStatsForSymbol(this.capability.id, symbol);
+        if (symbolHistory.length > 0) {
+          sections.push(`\n### Your past calls on ${symbol}:`);
+          for (const rec of symbolHistory.slice(0, 5)) {
+            const outcomeStr = rec.outcome
+              ? `→ ${rec.outcome}${rec.actual_return !== null ? ` (${(rec.actual_return * 100).toFixed(1)}% return)` : ''}`
+              : '→ pending';
+            sections.push(
+              `- ${rec.recommended_at}: ${rec.recommendation} at confidence ${rec.confidence ?? 'N/A'}% ${outcomeStr}`
+            );
+          }
+        }
+      }
+
+      if (sections.length === 0) return '';
+
+      sections.push(
+        '\nUse this track record to calibrate your confidence. If you were wrong before on similar setups, acknowledge it and adjust accordingly.'
+      );
+
+      return sections.join('\n');
+    } catch {
+      // Database not available — gracefully skip track record injection
+      return '';
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // Core Execution
   // ---------------------------------------------------------------------------
 
@@ -392,7 +456,13 @@ export abstract class BaseAgent {
 
       // Step 4: Build prompts
       const systemPrompt = this.buildSystemPrompt();
-      const userMessage = this.buildUserMessage(input, processedData);
+      let userMessage = this.buildUserMessage(input, processedData);
+
+      // Step 4.5: Inject track record context (if available)
+      const trackRecordContext = await this.buildTrackRecordContext(input.symbols);
+      if (trackRecordContext) {
+        userMessage += trackRecordContext;
+      }
 
       // Step 5: Build API request
       const tools = this.getTools();
@@ -497,7 +567,13 @@ export abstract class BaseAgent {
 
       const processedData = this.preprocessData(stockData);
       const systemPrompt = this.buildSystemPrompt();
-      const userMessage = this.buildUserMessage(input, processedData);
+      let userMessage = this.buildUserMessage(input, processedData);
+
+      // Inject track record context (if available)
+      const trackRecordContext = await this.buildTrackRecordContext(input.symbols);
+      if (trackRecordContext) {
+        userMessage += trackRecordContext;
+      }
 
       const tools = this.getTools();
       const toolChoice = this.getToolChoice();

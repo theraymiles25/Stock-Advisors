@@ -13,78 +13,12 @@ import AppShell from './components/layout/AppShell';
 import DashboardPage from './pages/DashboardPage';
 import AgentPage from './pages/AgentPage';
 import SettingsPage from './pages/SettingsPage';
-
-// -----------------------------------------------------------------------------
-// Placeholder Page Components
-// -----------------------------------------------------------------------------
-// These pages are not yet fully implemented. Each placeholder renders a simple
-// heading so navigation works immediately.
-
-function AnalysisPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">Analysis</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Synthesized analysis results from all agents.
-      </p>
-    </div>
-  );
-}
-
-function PortfolioPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">Portfolio</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Track your portfolio holdings and performance.
-      </p>
-    </div>
-  );
-}
-
-function WatchlistPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">Watchlist</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Stocks you are monitoring for potential trades.
-      </p>
-    </div>
-  );
-}
-
-function HistoryPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">History</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Past analysis runs and their results.
-      </p>
-    </div>
-  );
-}
-
-function PerformancePage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">Performance</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Track recommendation accuracy and agent performance metrics.
-      </p>
-    </div>
-  );
-}
-
-function PaperTradingPage() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-[var(--color-sa-text-primary)]">Paper Trading</h1>
-      <p className="mt-2 text-[var(--color-sa-text-secondary)]">
-        Simulated trading to test strategies without real money.
-      </p>
-    </div>
-  );
-}
+import AnalysisPage from './pages/AnalysisPage';
+import PortfolioPage from './pages/PortfolioPage';
+import WatchlistPage from './pages/WatchlistPage';
+import HistoryPage from './pages/HistoryPage';
+import PerformancePage from './pages/PerformancePage';
+import PaperTradingPage from './pages/PaperTradingPage';
 
 // -----------------------------------------------------------------------------
 // App
