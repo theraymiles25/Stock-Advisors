@@ -6,7 +6,8 @@
 // cumulative token usage / cost for the current session.
 // =============================================================================
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { useTokenTracking } from '../../hooks/useTokenTracking';
 
 // -----------------------------------------------------------------------------
 // Market Hours Helper
@@ -67,6 +68,13 @@ export default function StatusBar({
 }: StatusBarProps) {
   const marketOpen = useMemo(() => isMarketOpen(), []);
 
+  // Read input/output breakdown directly from the token tracking store
+  const totalInputTokens = useTokenTracking((s) => s.totalInputTokens);
+  const totalOutputTokens = useTokenTracking((s) => s.totalOutputTokens);
+
+  // Tooltip visibility state
+  const [showTokenTooltip, setShowTokenTooltip] = useState(false);
+
   return (
     <footer
       className="flex h-7 shrink-0 items-center justify-between border-t
@@ -92,9 +100,30 @@ export default function StatusBar({
 
       {/* Right: Token usage & cost */}
       <div className="flex items-center gap-3 text-[var(--color-sa-text-dim)]">
-        <span>
-          Tokens: {totalTokens.toLocaleString()}
-        </span>
+        <div
+          className="relative cursor-default"
+          onMouseEnter={() => setShowTokenTooltip(true)}
+          onMouseLeave={() => setShowTokenTooltip(false)}
+        >
+          <span>
+            Tokens: {totalTokens.toLocaleString()}
+          </span>
+
+          {/* Tooltip: input / output breakdown */}
+          {showTokenTooltip && (
+            <div
+              className="absolute bottom-full right-0 mb-2 whitespace-nowrap rounded-md
+                         border border-[var(--color-sa-border)] bg-[var(--color-sa-bg-elevated)]
+                         px-3 py-2 text-[11px] text-[var(--color-sa-text-secondary)] shadow-lg
+                         animate-fade-in"
+            >
+              <div className="flex flex-col gap-0.5">
+                <span>Input: {totalInputTokens.toLocaleString()}</span>
+                <span>Output: {totalOutputTokens.toLocaleString()}</span>
+              </div>
+            </div>
+          )}
+        </div>
         <span>
           Cost: ${totalCost.toFixed(2)}
         </span>

@@ -5,6 +5,9 @@
 // Sidebar, StatusBar, and the main content area into a cohesive layout that
 // fills the full viewport height. Used by App.tsx to wrap all routes.
 //
+// Registers global keyboard shortcuts and passes token tracking data to the
+// StatusBar for real-time session metrics.
+//
 // Layout structure:
 // +-------------------------------------------+
 // |              TitleBar (38px)               |
@@ -18,9 +21,12 @@
 // +-------------------------------------------+
 // =============================================================================
 
+import { useNavigate } from 'react-router-dom';
 import TitleBar from './TitleBar';
 import Sidebar from './Sidebar';
 import StatusBar from './StatusBar';
+import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
+import { useTokenTracking } from '../../hooks/useTokenTracking';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -35,6 +41,12 @@ interface AppShellProps {
 // -----------------------------------------------------------------------------
 
 export default function AppShell({ children }: AppShellProps) {
+  const navigate = useNavigate();
+  useKeyboardShortcuts(navigate);
+
+  const totalTokens = useTokenTracking((s) => s.totalTokens);
+  const estimatedCost = useTokenTracking((s) => s.estimatedCost);
+
   return (
     <div className="flex h-screen flex-col bg-[var(--color-sa-bg-primary)]">
       {/* Fixed title bar at the top */}
@@ -51,7 +63,7 @@ export default function AppShell({ children }: AppShellProps) {
       </div>
 
       {/* Fixed status bar at the bottom */}
-      <StatusBar />
+      <StatusBar totalTokens={totalTokens} totalCost={estimatedCost} />
     </div>
   );
 }
