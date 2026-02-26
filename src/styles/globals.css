@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* === Stock Advisors Custom Theme === */
+@theme {
+  /* Core palette - Bloomberg terminal meets Apple design */
+  --color-sa-bg-primary: #0A0E1A;
+  --color-sa-bg-secondary: #111827;
+  --color-sa-bg-tertiary: #1A2035;
+  --color-sa-bg-elevated: #1E2642;
+  --color-sa-bg-hover: #252E48;
+  --color-sa-bg-glass: rgba(17, 24, 39, 0.85);
+
+  /* Text */
+  --color-sa-text-primary: #F1F5F9;
+  --color-sa-text-secondary: #94A3B8;
+  --color-sa-text-muted: #64748B;
+  --color-sa-text-dim: #475569;
+
+  /* Financial colors */
+  --color-sa-green: #22C55E;
+  --color-sa-green-dim: rgba(34, 197, 94, 0.15);
+  --color-sa-red: #EF4444;
+  --color-sa-red-dim: rgba(239, 68, 68, 0.15);
+  --color-sa-amber: #F59E0B;
+  --color-sa-amber-dim: rgba(245, 158, 11, 0.15);
+
+  /* Accent */
+  --color-sa-accent: #3B82F6;
+  --color-sa-accent-hover: #60A5FA;
+  --color-sa-accent-dim: rgba(59, 130, 246, 0.15);
+
+  /* Borders */
+  --color-sa-border: rgba(148, 163, 184, 0.1);
+  --color-sa-border-hover: rgba(148, 163, 184, 0.2);
+
+  /* Agent brand colors */
+  --color-agent-goldman: #7BB3E0;
+  --color-agent-morgan-stanley: #002D72;
+  --color-agent-bridgewater: #8B0000;
+  --color-agent-jpmorgan: #005587;
+  --color-agent-blackrock: #333333;
+  --color-agent-citadel: #1B4D3E;
+  --color-agent-harvard: #A51C30;
+  --color-agent-bain: #CC0000;
+  --color-agent-rentech: #4A0E4E;
+  --color-agent-mckinsey: #0078C1;
+  --color-agent-palantir: #1C1C1C;
+  --color-agent-susquehanna: #FF6600;
+  --color-agent-aqr: #2E4057;
+  --color-agent-point72: #E8351E;
+  --color-agent-bloomberg: #F5A623;
+  --color-agent-master: #D4AF37;
+
+  /* Spacing */
+  --spacing-titlebar: 38px;
+
+  /* Radius */
+  --radius-panel: 12px;
+}
+
+/* === Base Styles === */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--color-sa-text-primary);
+  background-color: var(--color-sa-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--color-sa-bg-primary);
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Scrollbar Styling === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
+}
+
+/* === macOS Titlebar Drag Region === */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* === Agent Status Animations === */
+@keyframes pulse-thinking {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes stream-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.agent-thinking {
+  animation: pulse-thinking 1.5s ease-in-out infinite;
+}
+
+.stream-chunk {
+  animation: stream-in 0.15s ease-out;
+}
+
+/* === Panel Glass Effect === */
+.glass-panel {
+  background: var(--color-sa-bg-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--color-sa-border);
+  border-radius: var(--radius-panel);
+}
